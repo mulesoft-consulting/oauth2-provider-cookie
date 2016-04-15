@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mule-project xmlns="http://www.mulesoft.com/tooling/project" runtimeId="org.mule.tooling.apigateway.2.2.0" schemaVersion="3.5.0.0">
+    <name>template-gw-external-oauth2-provider-1.0.0-ldap</name>
+    <description></description>
+    <muleExtension name="OAuth provider module" qualifier="org.mule.tooling.ui.contribution.oauth2-provider.3.7.3"/>
+</mule-project>

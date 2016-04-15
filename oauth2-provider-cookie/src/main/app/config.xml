@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule 
+xmlns:api-platform-gw="http://www.mulesoft.org/schema/mule/api-platform-gw"
+xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" 
+xmlns:https="http://www.mulesoft.org/schema/mule/https"
+xmlns:tls="http://www.mulesoft.org/schema/mule/tls" 
+xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" 
+xmlns="http://www.mulesoft.org/schema/mule/core" 
+xmlns:context="http://www.springframework.org/schema/context" 
+xmlns:core="http://www.mulesoft.org/schema/mule/core" 
+xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" 
+xmlns:http="http://www.mulesoft.org/schema/mule/http" 
+xmlns:spring="http://www.springframework.org/schema/beans" 
+xmlns:ss="http://www.springframework.org/schema/security"
+xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+xmlns:oauth2-provider="http://www.mulesoft.org/schema/mule/oauth2-provider"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd
+http://www.mulesoft.org/schema/mule/oauth2-provider http://www.mulesoft.org/schema/mule/oauth2-provider/current/mule-oauth2-provider.xsd
+http://www.mulesoft.org/schema/mule/api-platform-gw http://www.mulesoft.org/schema/mule/api-platform-gw/current/mule-api-platform-gw.xsd">
+	<!-- This is the main configuration file, you should place here all the Connectors configuration and declarations -->
+
+    <context:property-placeholder location="common.properties, mule.${mule.env}.properties"/>
+
+    <mule-ss:security-manager name="multiple-users-security-manager">
+        <mule-ss:delegate-security-provider name="multiple-users-security-provider" delegate-ref="multiple-users-authentication-manager"/>
+    </mule-ss:security-manager>
+
+	<api-platform-gw:client-store id="multiple-users-client-store" doc:name="Client Store"/>
+
+    <api-platform-gw:client-security-provider id="multiple-users-client-security-provider" doc:name="Security Provider"/>
+
+    <oauth2-provider:config 
+        name="external-oauth2-provider"
+        providerName="OAuth Provider API" 
+        resourceOwnerSecurityProvider-ref="multiple-users-security-provider" 
+        clientSecurityProvider-ref="multiple-users-security-provider" 
+        clientStore-ref="multiple-users-client-store"
+        
+        defaultScopes="${scopes}" 
+        supportedGrantTypes="${supported.grant.types}" 
+        authorizationEndpointPath="${authorization.endpoint.path}" 
+         
+         
+        enableRefreshToken="true"
+        listenerConfig-ref="https.listener" doc:name="OAuth provider module" accessTokenEndpointPath="${access.token.endpoint.path}">
+    </oauth2-provider:config>
+</mule>
